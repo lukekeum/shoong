@@ -1,0 +1,29 @@
+services:
+  storage:
+    container_name: shoong-storage
+    image: minio/minio:latest
+    ports:
+      - 9000:9000
+      - 9001:9001
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: 'shoong'
+      MINIO_ROOT_PASSWORD: 'shoong1234'
+    volumes:
+      - shoong-storage:/data
+  
+  database:
+    container_name: shoong-database
+    image: postgres:16-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: 'shoong'
+      POSTGRES_PASSWORD: 'shoong1234' 
+      POSTGRES_DB: 'shoong'
+    volumes:
+      - shoong-database:/var/lib/postgresql/data
+
+volumes:
+  shoong-storage:
+  shoong-database:
