@@ -171,5 +171,5 @@ recordings/
 segments/
 hls/
 
-*.ts
-*.m3u8
+# *.ts
+# *.m3u8
