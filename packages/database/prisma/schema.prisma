@@ -11,3 +11,58 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id String @id @default(uuid())
+
+  encrypted_email String
+  email_hash      String @unique
+
+  identifier String   @unique
+  password   String   @unique
+  craetedAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  streamSetting StreamSetting?
+  profile       UserProfile?
+}
+
+model UserProfile {
+  id          String  @id @default(uuid())
+  displayName String  @unique
+  avartarURL  String?
+
+  users User @relation(fields: [userId], references: [id])
+
+  userId  String @unique
+  colorId Int
+}
+
+model StreamSetting {
+  id          String       @id @default(uuid())
+  streamKey   StreamKey    @relation(fields: [streamKeyId], references: [id])
+  title       String
+  description String
+  streaming   String
+  user        User         @relation(fields: [userId], references: [id])
+  status      StreamStatus
+
+  userId      String @unique
+  streamKeyId String
+}
+
+model StreamKey {
+  id String @id @default(uuid())
+
+  streamerId String
+
+  streamSettings StreamSetting[]
+
+  isRevoked Boolean
+}
+
+enum StreamStatus {
+  LIVE
+  ENDED
+  ERROR
+}
